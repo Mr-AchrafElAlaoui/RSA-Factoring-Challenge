@@ -1,48 +1,39 @@
-#!/usr/bin/env bash
-#is a challenge
-check_factor()
-{
-	if [ $# -ne 3 ];
-        then
-                args=("$@")
-                count=0
-                num2=1
-                for a in ${args[*]};
-                do
-                        if [ $count -gt 1 ];
-                        then
-                                num2=$(echo $a*$num2 | bc)
-                        fi
-                        count=$((count + 1))
-                done
-        else
-                num2=$3
-        fi
+#!/usr/bin/env python3
+from sys import argv
 
-        num1=$2
-        num=$(echo "$1" | tr ':' '=')
+def is_prime(number):
+    if number <= 1:
+        return False
+    for factor in range (2, int(number ** 0.5)+1):
+        if number % factor == 0:
+            return False
+    return True
 
-        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        numcp=$num1
-		        num1=$num2
-		        num2=$numcp
-                fi
+def factorize(number):
+    """
+    """
+    for factor in range(2, int(number ** 0.5) + 1):
+        if number % factor == 0:
+            other_factor = number // factor
+            if is_prime(factor) and is_prime(other_factor):
+                return other_factor, factor
+    return None
 
-        echo "$num$num1*$num2"
-}
+def main():
+    """
+    """
+    if len(argv) != 2:
+        print("Usage: rsa <file>")
+        return 1
 
-if [ $# -ne 1 ]
-then
-        echo 'Usage: rsa <file>'
-        exit 1
-else
-
-        while read i
-        do
-
-                result=$(factor "$i")
-                check_factor $result
-
-        done < "$1"
-fi
+    filename = argv[1]
+    with open(filename, 'r') as file:
+        for line in file:
+            number = int(line.strip())
+            factors_pairs = factorize(number)
+            if factors_pairs == None:
+                print(f"{number} is not a semi-prime number")
+            else:
+                print(f"{number}={factors_pairs[0]}*{factors_pairs[1]}")
+if __name__ == "__main__":
+    main()
