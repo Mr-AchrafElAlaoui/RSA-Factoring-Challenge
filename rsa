@@ -7,7 +7,7 @@ def factorize(number):
     if number  == 2:
         return number, 1
     else :
-        for factor in range(3, (number // 2) + 1, 2):
+        for factor in range(3, int(number ** 0.5) + 1, 2):
             if number  == (factor * (number // factor)):
                 return number // factor, factor
         return None
