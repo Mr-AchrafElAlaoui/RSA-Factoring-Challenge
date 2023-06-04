@@ -37,4 +37,3 @@ def main():
                 print(f"{number}={factors_pairs[0]}*{factors_pairs[1]}")
 if __name__ == "__main__":
     main()
-
