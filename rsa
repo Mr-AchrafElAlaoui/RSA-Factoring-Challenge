@@ -1,39 +1,60 @@
 #!/usr/bin/env python3
 from sys import argv
 
-def is_prime(number):
-    if number <= 1:
-        return False
-    for factor in range (2, int(number ** 0.5)+1):
-        if number % factor == 0:
-            return False
-    return True
+def sieve_of_eratosthenes(n):
+    sieve = [True] * (n + 1)
+    sieve[0] = sieve[1] = False
+    p = 2
+    while p * p <= n:
+        if sieve[p]:
+            for i in range(p * p, n + 1, p):
+                sieve[i] = False
+        p += 1
+    primes = [i for i in range(n + 1) if sieve[i]]
+    return primes
 
-def factorize(number):
-    """
-    """
-    for factor in range(2, int(number ** 0.5) + 1):
+def factorize(number, primes):
+    for factor in primes:
+        if factor * factor > number:
+            break
         if number % factor == 0:
             other_factor = number // factor
-            if is_prime(factor) and is_prime(other_factor):
+            if is_prime(other_factor):
                 return other_factor, factor
     return None
 
+def is_prime(number):
+    if number <= 1:
+        return False
+    if number == 2 or number == 3:
+        return True
+    if number % 2 == 0 or number % 3 == 0:
+        return False
+    i = 5
+    while i * i <= number:
+        if number % i == 0 or number % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
 def main():
-    """
-    """
     if len(argv) != 2:
         print("Usage: rsa <file>")
         return 1
 
     filename = argv[1]
     with open(filename, 'r') as file:
+        max_number = max(int(line.strip()) for line in file)
+        primes = sieve_of_eratosthenes(int(max_number ** 0.5) + 1)
+
+    with open(filename, 'r') as file:
         for line in file:
             number = int(line.strip())
-            factors_pairs = factorize(number)
-            if factors_pairs == None:
+            factors_pairs = factorize(number, primes)
+            if factors_pairs is None:
                 print(f"{number} is not a semi-prime number")
             else:
                 print(f"{number}={factors_pairs[0]}*{factors_pairs[1]}")
+
 if __name__ == "__main__":
     main()
