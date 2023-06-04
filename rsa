@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
 from sys import argv
 
+def is_prime(number):
+    if number <= 1:
+        return False
+    for factor in range (2, int(number ** 0.5)+1):
+        if number % factor == 0:
+            return False
+    return True
+
 def factorize(number):
     """
     """
-    if number  == 2:
-        return number, 1
-    else :
-        for factor in range(3, int(number ** 0.5) + 1, 2):
-            if number  == (factor * (number // factor)):
-                return number // factor, factor
-        return None
+    for factor in range(2, int(number ** 0.5) + 1):
+        if number % factor == 0:
+            other_factor = number // factor
+            if is_prime(factor) and is_prime(other_factor):
+                return other_factor, factor
+    return None
 
 def main():
     """
