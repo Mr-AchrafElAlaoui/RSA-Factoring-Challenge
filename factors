@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+
+"""This module that factorizes as many numbers as possible"""
+
+import sys
+import signal
+
+def factorize_number(natural_number):
+    """
+    """
+    square_root_number = int(natural_number ** 0.5)
+
+    for factor in range(2, square_root_number + 1):
+        if natural_number % factor == 0:
+            return factor, (natural_number // factor)
+
+    return 1, natural_number
+
+def main(file_path):
+    """
+    """
+    def timeout_handler(signum, fram):
+        print("Error: Programe timed out after 5 seconds.")
+        sys.exit(1)
+
+    signal.signal(signal.SIGALRM, timeout_handler)
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            natural_number = int(line)
+            signal.alarm(5)
+            try:
+                p, q = factorize_number(natural_number)
+                print(f"{natural_number}={q}*{p}")
+            except TimeoutException:
+                print(f"Factorization of {number} could not be completed in 5 seconds")
+            else:
+                signal.alarm(0)
+
+if __name__ == '__main__':
+
+    file_path = sys.argv[1]
+    main(file_path)
