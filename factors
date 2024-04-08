@@ -1,43 +1,37 @@
 #!/usr/bin/python3
 
 import sys
-import math
+import subprocess
 
 def factorize(number):
     """
+    Factorizes a number using the Unix 'factor' command and returns a pair of factors.
     """
-    root_number = int(math.sqrt(number))
-
-    if number % 2 == 0:
-        return (number // 2), 2
-
-    if number % 3 == 0:
-        return (number // 3), 3
-
-    for factor in range(5, root_number + 1, 6):
-        if number % factor == 0:
-            return (number // factor), factor
-        elif number % (factor + 2) == 0:
-            return (number // (factor + 2)), (factor + 2)
-
-    return number, 1
+    output = subprocess.run(['factor', str(number)], stdout=subprocess.PIPE).stdout.decode().split()
+    factors = output[1:]  # The first element is the original number, so we skip it
+    return factors
 
 def print_usage_and_exit():
     """
+    Prints the usage message and exits the program.
     """
     print("Usage: factors <file>")
     sys.exit(1)
 
 def file_process(filename):
     """
+    Reads a file line by line, factorizes each line using the 'factor' command, and prints the result.
     """
     with open(filename, 'r') as file:
         for line in file:
             number = int(line)
             factors = factorize(number)
-            print("{}={}*{}".format(number, factors[0], factors[1]))
+            print(f"{number}={'*'.join(factors)}")
 
 def main():
+    """
+    The main function of the program.
+    """
     if len(sys.argv) != 2:
         print_usage_and_exit()
 
