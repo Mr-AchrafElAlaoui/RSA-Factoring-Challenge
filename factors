@@ -1,50 +1,49 @@
-#!/usr/bin/env bash
-# is a factors challenge
+#!/usr/bin/python3
 
-check_factor()
-{
-	if [ $# -ne 3 ];
-        then
-                args=("$@")
-                count=0
-                num2=1
-                for a in ${args[*]};
-                do
-                        if [ $count -gt 1 ];
-                        then
-                                num2=$(echo $a*$num2 | bc)
-                        fi
-                        count=$((count + 1))
-                done
-        else
-                num2=$3
+import sys
+import math
 
-        fi
+def factorize(number):
+    """
+    """
+    root_number = int(math.sqrt(number))
 
-        num1=$2
-        num=$(echo "$1" | tr ':' '=')
+    if number % 2 == 0:
+        return (number // 2), 2
 
-        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        numcp=$num1
-		        num1=$num2
-		        num2=$numcp
-                fi
+    if number % 3 == 0:
+        return (number // 3), 3
 
-        echo "$num$num1*$num2"
-}
+    for factor in range(5, root_number + 1, 6):
+        if number % factor == 0:
+            return (number // factor), factor
+        elif number % (factor + 2) == 0:
+            return (number // (factor + 2)), (factor + 2)
 
-if [ $# -ne 1 ]
-then
-        echo 'Usage: factors <file>'
-        exit 1 
-else
+    return number, 1
 
-        while read i
-        do
+def print_usage_and_exit():
+    """
+    """
+    print("Usage: factors <file>")
+    sys.exit(1)
 
-                result=$(factor "$i")
-                check_factor $result
+def file_process(filename):
+    """
+    """
+    with open(filename, 'r') as file:
+        for line in file:
+            number = int(line)
+            factors = factorize(number)
+            print("{}={}*{}".format(number, factors[0], factors[1]))
 
-        done < "$1"
-fi
+def main():
+    if len(sys.argv) != 2:
+        print_usage_and_exit()
+
+    filename = sys.argv[1]
+
+    file_process(filename)
+
+if __name__ == "__main__":
+    main()
