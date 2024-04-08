@@ -5,11 +5,13 @@ import subprocess
 
 def factorize(number):
     """
-    Factorizes a number using the Unix 'factor' command and returns a pair of factors.
+    Factorizes a number using the Unix 'factor' command and returns the largest factor and its pair.
     """
     output = subprocess.run(['factor', str(number)], stdout=subprocess.PIPE).stdout.decode().split()
     factors = output[1:]  # The first element is the original number, so we skip it
-    return factors
+    largest_factor = int(factors[-1])  # The largest factor is the last one in the list
+    pair = number // largest_factor
+    return pair, largest_factor
 
 def print_usage_and_exit():
     """
@@ -25,8 +27,8 @@ def file_process(filename):
     with open(filename, 'r') as file:
         for line in file:
             number = int(line)
-            factors = factorize(number)
-            print(f"{number}={'*'.join(factors)}")
+            pair, largest_factor = factorize(number)
+            print(f"{number}={pair}*{largest_factor}")
 
 def main():
     """
